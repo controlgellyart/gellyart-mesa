@@ -2,84 +2,64 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GELLYART - Servicio a la Mesa</title>
     <style>
         body {
-            margin: 0;
-            padding: 20px;
             font-family: Arial, sans-serif;
-            background-color: #FAF9F6;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
+            background-color: #f4f4f9;
             text-align: center;
-            box-sizing: border-box;
+            padding: 50px;
+            color: #333;
         }
-        h2 { color: #333; margin-bottom: 5px; }
-        .mesa-title { font-size: 24px; font-weight: bold; color: #b8860b; margin-bottom: 30px; }
-        .btn-container { width: 100%; max-width: 300px; display: flex; flex-direction: column; gap: 15px; }
-        .btn {
-            padding: 18px;
-            font-size: 18px;
-            font-weight: bold;
-            color: #fff;
+        .container {
+            background: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
+            display: inline-block;
+        }
+        h1 { color: #d9534f; }
+        h2 { color: #333; }
+        button {
+            background-color: #5cb85c;
+            color: white;
             border: none;
-            border-radius: 12px;
+            padding: 15px 25px;
+            font-size: 18px;
+            border-radius: 5px;
             cursor: pointer;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            transition: 0.2s;
+            margin-top: 20px;
         }
-        .btn-servicio { background-color: #2e7d32; }
-        .btn-servicio:active { background-color: #1b5e20; transform: scale(0.98); }
-        .btn-cuenta { background-color: #c62828; }
-        .btn-cuenta:active { background-color: #b71c1c; transform: scale(0.98); }
-        #mensajeEstado { margin-top: 20px; font-size: 16px; font-weight: bold; min-height: 24px; }
+        button:hover { background-color: #4cae4c; }
     </style>
 </head>
 <body>
 
-    <h2 id="nombreNegocio">Cargando...</h2>
-    <div class="mesa-title" id="numeroMesa">Mesa --</div>
-
-    <div class="btn-container">
-        <button class="btn btn-servicio" onclick="enviarSolicitud('SERVICIO')">🔔 PEDIR SERVICIO</button>
-        <button class="btn btn-cuenta" onclick="enviarSolicitud('CUENTA')">🧾 PEDIR CUENTA</button>
+    <div class="container">
+        <h1 id="negocio-titulo">GELLYART</h1>
+        <h2 id="mesa-titulo">Mesa</h2>
+        <p>Selecciona una opción para notificar al personal:</p>
+        
+        <button onclick="enviarSolicitud('¡Llamar al mesero!')">🛎️ Llamar al Mesero</button>
+        <br><br>
+        <button onclick="enviarSolicitud('Pedir la Cuenta')">📄 Pedir Cuenta</button>
     </div>
 
-    <div id="mensajeEstado"></div>
-
     <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        const negocio = urlParams.get('negocio') || 'GellyArt';
-        const mesa = urlParams.get('mesa') || '1';
+        // Leer parámetros de la URL
+        const params = new URLSearchParams(window.location.search);
+        const negocio = params.get('negocio') || 'GELLYART';
+        const mesa = params.get('mesa') || '1';
 
-        document.getElementById('nombreNegocio').innerText = decodeURIComponent(negocio);
-        document.getElementById('numeroMesa').innerText = "Mesa " + decodeURIComponent(mesa);
-
-        const scriptURL = "https://script.google.com/macros/s/AKfycbwHZTPuHu8cVLeBsGHSFD8L7M-DrX1rG5rIQ2NcR03RQ3i-TCQBaQ-8bh4Q0luXLskBBQ/exec";
+        document.getElementById('negocio-titulo').innerText = negocio;
+        document.getElementById('mesa-titulo').innerText = `Mesa ${mesa}`;
 
         function enviarSolicitud(accion) {
-            const estadoDiv = document.getElementById('mensajeEstado');
-            estadoDiv.style.color = "#555";
-            estadoDiv.innerText = "Enviando solicitud...";
-
-            const urlFinal = `${scriptURL}?negocio=${encodeURIComponent(negocio)}&mesa=${encodeURIComponent(mesa)}&accion=${encodeURIComponent(accion)}`;
-
-            fetch(urlFinal, { method: 'GET', mode: 'no-cors' })
-                .then(() => {
-                    estadoDiv.style.color = "green";
-                    estadoDiv.innerText = "¡Solicitud enviada con éxito!";
-                    setTimeout(() => { estadoDiv.innerText = ""; }, 4000);
-                })
-                .catch(error => {
-                    estadoDiv.style.color = "red";
-                    estadoDiv.innerText = "Error al enviar. Intenta de nuevo.";
-                    console.error('Error:', error);
-                });
+            alert(`Solicitud enviada: ${accion} para ${negocio} - Mesa ${mesa}`);
+            // Aquí puedes integrar el enlace de envío hacia tu Google Form o Webhook de Apps Script
         }
     </script>
+
 </body>
 </html>

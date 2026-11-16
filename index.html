@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>GELLYART - Servicio a la Mesa</title>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #FAF9F6;
+        }
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+    <iframe id="appFrame" src=""></iframe>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const negocio = urlParams.get('negocio') || '';
+        const mesa = urlParams.get('mesa') || '';
+
+        const scriptURL = "https://script.google.com/macros/s/AKfycbwHZTPuHu8cVLeBsGHSFD8L7M-DrX1rG5rIQ2NcR03RQ3i-TCQBaQ-8bh4Q0luXLskBBQ/exec";
+
+        document.getElementById('appFrame').src = `${scriptURL}?negocio=${encodeURIComponent(negocio)}&mesa=${encodeURIComponent(mesa)}`;
+    </script>
+
+</body>
+</html>

@@ -26,12 +26,15 @@
     <iframe id="appFrame" src=""></iframe>
 
     <script>
+        // Capturamos los parámetros exactos de la URL (ej. ?negocio=PIZZA%20PEPINO&mesa=Mesa%2010)
         const urlParams = new URLSearchParams(window.location.search);
         const negocio = urlParams.get('negocio') || '';
         const mesa = urlParams.get('mesa') || '';
 
+        // Tu enlace de producción oficial de Google Apps Script
         const scriptURL = "https://script.google.com/macros/s/AKfycbwHZTPuHu8cVLeBsGHSFD8L7M-DrX1rG5rIQ2NcR03RQ3i-TCQBaQ-8bh4Q0luXLskBBQ/exec";
 
+        // Reenviamos los parámetros reales hacia el iframe para que Apps Script pinte el negocio y mesa correctos
         document.getElementById('appFrame').src = `${scriptURL}?negocio=${encodeURIComponent(negocio)}&mesa=${encodeURIComponent(mesa)}`;
     </script>
 

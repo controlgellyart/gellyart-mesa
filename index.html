@@ -1,65 +1,30 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GELLYART - Servicio a la Mesa</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
-            text-align: center;
-            padding: 50px;
-            color: #333;
-        }
-        .container {
-            background: #fff;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
-            display: inline-block;
-        }
-        h1 { color: #d9534f; }
-        h2 { color: #333; }
-        button {
-            background-color: #5cb85c;
-            color: white;
-            border: none;
-            padding: 15px 25px;
-            font-size: 18px;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-top: 20px;
-        }
-        button:hover { background-color: #4cae4c; }
-    </style>
-</head>
-<body>
+const scriptURL = 'PEGAR_AQUI_TU_URL_DE_GOOGLE_APPS_SCRIPT';
 
-    <div class="container">
-        <h1 id="negocio-titulo">GELLYART</h1>
-        <h2 id="mesa-titulo">Mesa</h2>
-        <p>Selecciona una opción para notificar al personal:</p>
-        
-        <button onclick="enviarSolicitud('¡Llamar al mesero!')">🛎️ Llamar al Mesero</button>
-        <br><br>
-        <button onclick="enviarSolicitud('Pedir la Cuenta')">📄 Pedir Cuenta</button>
-    </div>
+function enviarAlerta(tipo) {
+  const urlParams = new URLSearchParams(window.location.search);
+  const negocio = urlParams.get('negocio') || 'Desconocido';
+  const mesa = urlParams.get('mesa') || 'Desconocida';
 
-    <script>
-        // Leer parámetros de la URL
-        const params = new URLSearchParams(window.location.search);
-        const negocio = params.get('negocio') || 'GELLYART';
-        const mesa = params.get('mesa') || '1';
+  const datos = {
+    negocio: negocio,
+    mesa: mesa,
+    accion: tipo // "Llamar al Mesero" o "Pedir Cuenta"
+  };
 
-        document.getElementById('negocio-titulo').innerText = negocio;
-        document.getElementById('mesa-titulo').innerText = `Mesa ${mesa}`;
-
-        function enviarSolicitud(accion) {
-            alert(`Solicitud enviada: ${accion} para ${negocio} - Mesa ${mesa}`);
-            // Aquí puedes integrar el enlace de envío hacia tu Google Form o Webhook de Apps Script
-        }
-    </script>
-
-</body>
-</html>
+  // Envío hacia Google Apps Script
+  fetch(scriptURL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(datos)
+  })
+  .then(() => {
+    alert("¡Solicitud enviada con éxito! El personal está en camino.");
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    alert("Hubo un problema al enviar la solicitud.");
+  });
+}

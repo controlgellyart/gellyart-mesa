@@ -52,16 +52,13 @@
     <div id="mensajeEstado"></div>
 
     <script>
-        // Capturamos los parámetros de la URL (?negocio=ESTHELLA&mesa=3)
         const urlParams = new URLSearchParams(window.location.search);
         const negocio = urlParams.get('negocio') || 'GellyArt';
         const mesa = urlParams.get('mesa') || '1';
 
-        // Mostramos el nombre del negocio y la mesa visualmente en la pantalla
         document.getElementById('nombreNegocio').innerText = decodeURIComponent(negocio);
         document.getElementById('numeroMesa').innerText = "Mesa " + decodeURIComponent(mesa);
 
-        // Tu enlace oficial de Web App de Google Apps Script
         const scriptURL = "https://script.google.com/macros/s/AKfycbwHZTPuHu8cVLeBsGHSFD8L7M-DrX1rG5rIQ2NcR03RQ3i-TCQBaQ-8bh4Q0luXLskBBQ/exec";
 
         function enviarSolicitud(accion) {
@@ -69,7 +66,6 @@
             estadoDiv.style.color = "#555";
             estadoDiv.innerText = "Enviando solicitud...";
 
-            // Armamos la URL con parámetros GET para evitar bloqueos de CORS en Apps Script
             const urlFinal = `${scriptURL}?negocio=${encodeURIComponent(negocio)}&mesa=${encodeURIComponent(mesa)}&accion=${encodeURIComponent(accion)}`;
 
             fetch(urlFinal, { method: 'GET', mode: 'no-cors' })

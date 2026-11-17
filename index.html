@@ -78,10 +78,8 @@
     </div>
 
     <script>
-        // URL real del Web App de Google Apps Script configurada directamente
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwHZTPuHu8cVLeBsGHSFD8L7M-DrX1rG5rIQ2NcR03RQ3i-TCQBaQ-8bh4Q0luXLskBBQ/exec";
 
-        // Obtener parámetros de la URL (?negocio=NOMBRE&mesa=X)
         const urlParams = new URLSearchParams(window.location.search);
         const negocio = urlParams.get('negocio') || 'Esthella';
         const mesa = urlParams.get('mesa') || '1';

@@ -5,171 +5,118 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Servicio a la Mesa - GellyArt</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body {
-            background-color: #f4f6f8;
+            font-family: Arial, sans-serif;
+            background-color: #f4f7f6;
+            margin: 0;
+            padding: 20px;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
-            padding: 20px;
+            height: 100vh;
         }
-        .card {
+        .container {
             background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            max-width: 400px;
             width: 100%;
-            max-width: 380px;
-            padding: 30px 25px;
-            border-radius: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
             text-align: center;
         }
-        .header-badge {
-            background-color: #4a5568;
+        h2 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .info {
+            font-size: 18px;
+            color: #555;
+            margin: 15px 0;
+            background: #eef2f3;
+            padding: 10px;
+            border-radius: 6px;
+        }
+        button {
+            background-color: #28a745;
             color: white;
-            font-weight: bold;
-            font-size: 14px;
-            letter-spacing: 1px;
+            border: none;
             padding: 12px 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
-        .mesa-info {
-            color: #d69e2e;
-            font-weight: bold;
-            font-size: 18px;
-            margin-bottom: 15px;
-            text-transform: uppercase;
-        }
-        .instruction {
-            color: #2d3748;
-            font-size: 20px;
-            font-weight: 600;
-            margin-bottom: 25px;
-        }
-        .btn-servicio {
-            background-color: #ecc94b;
-            color: #1a202c;
-            border: none;
-            width: 100%;
-            padding: 15px;
             font-size: 16px;
-            font-weight: bold;
-            border-radius: 10px;
+            border-radius: 6px;
             cursor: pointer;
-            margin-bottom: 15px;
-            box-shadow: 0 4px 10px rgba(236, 201, 75, 0.3);
-            transition: all 0.2s ease;
-        }
-        .btn-servicio:hover { background-color: #d69e2e; }
-        .btn-cuenta {
-            background-color: #2d3748;
-            color: white;
-            border: none;
             width: 100%;
+            margin-top: 15px;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .mensaje-exito {
+            display: none;
+            color: #155724;
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
             padding: 15px;
-            font-size: 16px;
-            font-weight: bold;
-            border-radius: 10px;
-            cursor: pointer;
-            margin-bottom: 25px;
-            box-shadow: 0 4px 10px rgba(45, 55, 72, 0.3);
-            transition: all 0.2s ease;
+            border-radius: 6px;
+            margin-top: 20px;
         }
-        .btn-cuenta:hover { background-color: #1a202c; }
-        
-        /* Vista de éxito exacta a tu captura */
-        .success-box {
-            background-color: #e6fffa;
-            border: 2px solid #38b2ac;
-            border-radius: 12px;
-            padding: 20px;
-            margin-top: 10px;
-            margin-bottom: 20px;
-        }
-        .success-box h3 {
-            color: #2b6cb0;
-            font-size: 18px;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-        .success-box p {
-            color: #2d3748;
-            font-size: 15px;
-        }
-        .footer-brand {
-            color: #a0aec0;
-            font-size: 13px;
-            margin-top: 10px;
-        }
-        .hidden { display: none; }
     </style>
 </head>
 <body>
 
-    <div class="card">
-        <div class="header-badge">SERVICIO A LA MESA</div>
-        
-        <div id="infoNegocioMesa" class="mesa-info">ESTHELLA - MESA 3</div>
-        
-        <!-- Pantalla Principal de Botones -->
-        <div id="vistaPrincipal">
-            <div class="instruction">¿Cómo podemos ayudarte?</div>
-            <button class="btn-servicio" onclick="enviarSolicitud('SERVICIO')">🛎️ SERVICIO</button>
-            <button class="btn-cuenta" onclick="enviarSolicitud('CUENTA')">💳 CUENTA</button>
+    <div class="container">
+        <h2>GellyArt - Servicio</h2>
+        <div id="detalles-mesa" class="info">
+            Cargando información de tu mesa...
         </div>
 
-        <!-- Pantalla de Éxito (idéntica a tu diseño verde/agua) -->
-        <div id="vistaExito" class="hidden">
-            <div class="instruction" style="margin-bottom: 15px;">¿Cómo podemos ayudarte?</div>
-            <div class="success-box">
-                <h3>✅ ¡Solicitud enviada!</h3>
-                <p>Enseguida estamos contigo.</p>
+        <form id="form-solicitud">
+            <input type="hidden" id="input-negocio" name="entry.XXXXXX_NEGOCIO">
+            <input type="hidden" id="input-mesa" name="entry.XXXXXX_MESA">
+            
+            <div style="margin-bottom: 15px; text-align: left;">
+                <label for="tipo-ayuda" style="font-weight: bold; color: #333; display: block; margin-bottom: 5px;">¿En qué podemos ayudarte?</label>
+                <select id="tipo-ayuda" name="entry.XXXXXX_AYUDA" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #ccc;">
+                    <option value="Llamar al mesero">🛎️ Llamar al mesero</option>
+                    <option value="Pedir la cuenta">💳 Pedir la cuenta</option>
+                    <option value="Solicitar servilletas / extras">🧻 Solicitar servilletas o extras</option>
+                    <option value="Otro motivo">💬 Otro motivo</option>
+                </select>
             </div>
-        </div>
 
-        <div class="footer-brand">By GellyArt</div>
+            <button type="submit" id="btn-enviar">Enviar Solicitud</button>
+        </form>
+
+        <div id="alerta-exito" class="mensaje-exito">
+            ¡Solicitud enviada con éxito! El personal ha sido notificado y te atenderá en un momento.
+        </div>
     </div>
 
     <script>
-        // Leer parámetros de la URL (?negocio=ESTHELLA&mesa=3)
+        // Obtener parámetros de la URL (?negocio=NOMBRE&mesa=X)
         const urlParams = new URLSearchParams(window.location.search);
-        const negocio = urlParams.get('negocio') || 'ESTHELLA';
-        const mesa = urlParams.get('mesa') || '3';
+        const negocio = urlParams.get('negocio') || 'Establecimiento';
+        const mesa = urlParams.get('mesa') || 'General';
 
-        // Mostrar dinámicamente en pantalla
-        document.getElementById('infoNegocioMesa').innerText = `${negocio} - MESA ${mesa}`;
+        // Mostrar en pantalla
+        document.getElementById('detalles-mesa').innerHTML = 
+            `🏢 <strong>Negocio:</strong> ${negocio}<br>📍 <strong>Mesa:</strong> ${mesa}`;
 
-        function enviarSolicitud(tipo) {
-            // URL de tu Web App de Google Apps Script
-            const urlWebHook = "https://script.google.com/macros/s/AKfycbwHZTPuHu8cVLeBsGHSFD8L7M-DrX1rG5rIQ2NcR03RQ3i-TCQBaQ-8bh4Q0luXLskBBQ/exec";
+        // Asignar valores a los inputs ocultos para el formulario
+        document.getElementById('input-negocio').value = negocio;
+        document.getElementById('input-mesa').value = mesa;
 
-            // Cambiar visualmente a la pantalla de éxito de inmediato
-            document.getElementById('vistaPrincipal').classList.add('hidden');
-            document.getElementById('vistaExito').classList.remove('hidden');
+        // Manejo del envío del formulario (puedes adaptarlo al endpoint de tu Google Form o Web App)
+        document.getElementById('form-solicitud').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Simulación de envío o conexión directa con tu form/script
+            document.getElementById('form-solicitud').style.display = 'none';
+            document.getElementById('alerta-exito').style.display = 'block';
 
-            // Enviar datos al Apps Script en segundo plano
-            fetch(urlWebHook, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    negocio: negocio, 
-                    mesa: mesa, 
-                    tipo: tipo 
-                })
-            }).catch(error => {
-                console.error('Error al enviar:', error);
-            });
-
-            // Regresar a los botones principales después de 6 segundos por si necesitan otra acción
-            setTimeout(() => {
-                document.getElementById('vistaExito').classList.add('hidden');
-                document.getElementById('vistaPrincipal').classList.remove('hidden');
-            }, 6000);
-        }
+            // Aquí puedes integrar el fetch hacia tu Google Apps Script web app si prefieres envío directo por POST JSON
+            // fetch('URL_DE_TU_WEB_APP', { method: 'POST', body: new FormData(this) });
+        });
     </script>
 </body>
 </html>

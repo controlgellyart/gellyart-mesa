@@ -1,39 +1,34 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>GELLYART - Servicio a la Mesa</title>
-    <style>
-        html, body {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            background-color: #FAF9F6;
-        }
-        iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-            display: block;
-        }
-    </style>
-</head>
-<body>
+function enviarAccion(accion) {
+    const msgDiv = document.getElementById('mensaje');
+    msgDiv.style.color = "#c69214";
+    msgDiv.innerText = "Enviando solicitud...";
 
-    <iframe id="appFrame" src=""></iframe>
+    const urlParams = new URLSearchParams(window.location.search);
+    const nombreNegocio = urlParams.get('negocio') || 'GENERAL';
+    const numeroMesa = urlParams.get('mesa') || '1';
 
-    <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        const negocio = urlParams.get('negocio') || '';
-        const mesa = urlParams.get('mesa') || '';
+    const URL_APPS_SCRIPT = "https://script.google.com/macros/s/AKfycbwHZTPuHu8cVLeBsGHSFD8L7M-DrX1rG5rIQ2NcR03RQ3i-TCQBaQ-8bh4Q0luXLskBBQ/exec";
 
-        const scriptURL = "https://script.google.com/macros/s/AKfycbwHZTPuHu8cVLeBsGHSFD8L7M-DrX1rG5rIQ2NcR03RQ3i-TCQBaQ-8bh4Q0luXLskBBQ/exec";
-
-        document.getElementById('appFrame').src = `${scriptURL}?negocio=${encodeURIComponent(negocio)}&mesa=${encodeURIComponent(mesa)}`;
-    </script>
-
-</body>
-</html>
+    fetch(URL_APPS_SCRIPT, {
+        method: "POST",
+        mode: "no-cors",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            negocio: nombreNegocio,
+            mesa: numeroMesa,
+            accion: accion
+        })
+    })
+    .then(() => {
+        msgDiv.style.color = "#2b8a3e";
+        msgDiv.innerText = "¡Solicitud enviada con éxito!";
+        setTimeout(() => { msgDiv.innerText = ""; }, 4000);
+    })
+    .catch(error => {
+        msgDiv.style.color = "#c92a2a";
+        msgDiv.innerText = "Error al enviar. Intenta de nuevo.";
+        console.error(error);
+    });
+}

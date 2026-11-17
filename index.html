@@ -5,117 +5,123 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Servicio a la Mesa - GellyArt</title>
     <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
-            margin: 0;
-            padding: 20px;
+            background-color: #f4f7f6;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
+            padding: 20px;
         }
         .container {
             background: #ffffff;
             padding: 30px;
             border-radius: 12px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            max-width: 400px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
             width: 100%;
+            max-width: 400px;
+            text-align: center;
         }
-        h2 {
-            color: #333;
-            margin-bottom: 10px;
+        h1 {
+            font-size: 1.25rem;
+            color: #333333;
+            margin-bottom: 5px;
         }
-        #info-mesa {
-            font-size: 18px;
-            color: #666;
+        .subtitle {
+            font-size: 1.1rem;
+            color: #d69e2e;
             margin-bottom: 25px;
+            font-weight: bold;
         }
         .btn {
-            display: block;
             width: 100%;
-            padding: 15px;
-            margin: 15px 0;
-            font-size: 18px;
+            padding: 16px;
+            font-size: 1rem;
             font-weight: bold;
-            color: #fff;
             border: none;
             border-radius: 8px;
             cursor: pointer;
-            transition: background 0.3s ease;
+            margin-bottom: 15px;
+            color: white;
+            transition: transform 0.1s;
         }
-        .btn-mesero {
-            background-color: #d9534f;
-        }
-        .btn-mesero:hover {
-            background-color: #c9302c;
-        }
-        .btn-cuenta {
-            background-color: #f0ad4e;
-        }
-        .btn-cuenta:hover {
-            background-color: #ec971f;
-        }
-        #mensaje {
-            margin-top: 20px;
-            font-size: 16px;
+        .btn:active { transform: scale(0.98); }
+        .btn-service { background-color: #2e7d32; }
+        .btn-service:hover { background-color: #1b5e20; }
+        .btn-bill { background-color: #1565c0; }
+        .btn-bill:hover { background-color: #0d47a1; }
+        #status-message {
+            margin-top: 15px;
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            display: none;
             font-weight: bold;
+        }
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            display: block !important;
         }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h2>GellyArt - Atención</h2>
-        <div id="info-mesa">Cargando datos de la mesa...</div>
+        <h1>GellyArt - Servicio</h1>
+        <div class="subtitle" id="info-negocio">Cargando mesa...</div>
 
-        <button class="btn btn-mesero" onclick="enviarSolicitud('LLAMAR AL MESERO')">LLAMAR AL MESERO</button>
-        <button class="btn btn-cuenta" onclick="enviarSolicitud('PEDIR LA CUENTA')">PEDIR LA CUENTA</button>
+        <button class="btn btn-service" onclick="enviarSolicitud('LLAMAR AL MESERO')">
+            🛎️ LLAMAR AL MESERO
+        </button>
 
-        <div id="mensaje"></div>
+        <button class="btn btn-bill" onclick="enviarSolicitud('PEDIR LA CUENTA')">
+            💳 PEDIR LA CUENTA
+        </button>
+
+        <div id="status-message">✅ ¡Solicitud enviada con éxito! En un momento te atendemos.</div>
     </div>
 
     <script>
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwHZTPuHu8cVLeBsGHSFD8L7M-DrX1rG5rIQ2NcR03RQ3i-TCQBaQ-8bh4Q0luXLskBBQ/exec";
-
         const urlParams = new URLSearchParams(window.location.search);
-        const negocio = urlParams.get('negocio') || 'Esthella';
+        const negocio = urlParams.get('negocio') || 'GellyArt';
         const mesa = urlParams.get('mesa') || '1';
 
-        document.getElementById('info-mesa').innerHTML = `Negocio: <strong>${decodeURIComponent(negocio)}</strong><br>Mesa: <strong>${mesa}</strong>`;
+        document.getElementById('info-negocio').innerText = `${negocio.toUpperCase()} - MESA ${mesa}`;
 
-        function enviarSolicitud(accion) {
-            const mensajeDiv = document.getElementById('mensaje');
-            mensajeDiv.style.color = '#333';
-            mensajeDiv.innerText = 'Enviando solicitud...';
+        // Tu URL exacta de Apps Script
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwHZTPuHu8cVLeBsGHSFD8L7M-DrX1rG5rIQ2NcR03RQ3i-TCQBaQ-8bh4Q0luXLskBBQ/exec";
+
+        function enviarSolicitud(tipoAccion) {
+            const statusDiv = document.getElementById('status-message');
+            
+            statusDiv.className = "alert-success";
+            statusDiv.style.display = "block";
 
             const datos = {
-                negocio: decodeURIComponent(negocio),
+                negocio: negocio,
                 mesa: mesa,
-                accion: accion,
+                accion: tipoAccion,
                 timestamp: new Date().toISOString()
             };
 
-            fetch(SCRIPT_URL, {
+            fetch(WEB_APP_URL, {
                 method: 'POST',
                 mode: 'no-cors',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(datos)
-            })
-            .then(() => {
-                mensajeDiv.style.color = 'green';
-                mensajeDiv.innerText = '¡Solicitud enviada con éxito!';
-                setTimeout(() => { mensajeDiv.innerText = ''; }, 4000);
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                mensajeDiv.style.color = 'red';
-                mensajeDiv.innerText = 'Hubo un error al enviar la solicitud.';
+            }).catch(error => {
+                console.error('Error al notificar:', error);
             });
+
+            setTimeout(() => {
+                statusDiv.style.display = 'none';
+                statusDiv.className = '';
+            }, 4000);
         }
     </script>
 </body>

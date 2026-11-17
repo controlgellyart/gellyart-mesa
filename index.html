@@ -22,13 +22,12 @@
             text-align: center;
             width: 320px;
         }
-        /* Recuadro azul original pero con texto más grande */
         .app-title-box {
             background-color: #314155;
             color: white;
             padding: 12px;
             border-radius: 6px;
-            font-size: 18px; /* Texto más grande para el nombre de la app */
+            font-size: 18px;
             font-weight: bold;
             margin-bottom: 15px;
             letter-spacing: 0.5px;
@@ -39,9 +38,8 @@
             color: #d35400;
             margin-bottom: 15px;
         }
-        /* Pregunta fundamental más grande para lectura inmediata */
         .question {
-            font-size: 18px; /* Texto más grande para la pregunta clave */
+            font-size: 18px;
             font-weight: bold;
             color: #2c3e50;
             margin-bottom: 20px;
@@ -66,6 +64,24 @@
             background-color: #314155;
             color: white;
         }
+        /* Recuadro de alerta denegada oculto por defecto */
+        #alerta-denegada {
+            display: none;
+            background-color: #fde8e8;
+            color: #c0392b;
+            border: 1px solid #f5c6cb;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+        #mensaje-estado {
+            margin-top: 15px;
+            font-size: 14px;
+            font-weight: 500;
+            min-height: 20px;
+        }
         .footer {
             margin-top: 20px;
             font-size: 12px;
@@ -76,17 +92,20 @@
 <body>
 
     <div class="card">
-        <!-- Recuadro azul original con texto ampliado -->
         <div class="app-title-box">SERVICIO A LA MESA</div>
         
         <div class="mesa-info" id="mesa-info">CARGANDO...</div>
         
-        <!-- Pregunta fundamental ampliada -->
         <div class="question">¿Cómo podemos ayudarte?</div>
 
         <button class="btn btn-servicio" onclick="enviarSolicitud('SERVICIO')">🔔 SERVICIO</button>
         <button class="btn btn-cuenta" onclick="enviarSolicitud('CUENTA')">💳 CUENTA</button>
         
+        <!-- Recuadro visual para la alerta denegada -->
+        <div id="alerta-denegada">⚠️ ALERTA DENEGADA</div>
+
+        <div id="mensaje-estado"></div>
+
         <div class="footer">By GellyArt</div>
     </div>
 
@@ -96,6 +115,10 @@
         const mesa = urlParams.get('mesa') || '1';
         
         document.getElementById('mesa-info').innerText = `${negocio.toUpperCase()} - MESA ${mesa}`;
+
+        // Ejemplo de validación: si detectas que la mesa no es válida o no existe en tu control
+        // Puedes activar esta condición para mostrar el recuadro rojo:
+        // document.getElementById('alerta-denegada').style.display = 'block';
 
         function enviarSolicitud(tipo) {
             alert(`Solicitud de ${tipo} enviada para ${negocio}, Mesa ${mesa}`);

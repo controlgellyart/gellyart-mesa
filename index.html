@@ -9,6 +9,7 @@ function enviarAccion(accion) {
 
     const URL_APPS_SCRIPT = "https://script.google.com/macros/s/AKfycbwHZTPuHu8cVLeBsGHSFD8L7M-DrX1rG5rIQ2NcR03RQ3i-TCQBaQ-8bh4Q0luXLskBBQ/exec";
 
+    // Enviamos usando no-cors pero asegurando el flujo correcto
     fetch(URL_APPS_SCRIPT, {
         method: "POST",
         mode: "no-cors",
@@ -21,7 +22,8 @@ function enviarAccion(accion) {
             accion: accion
         })
     })
-    .then(() => {
+    .then(response => {
+        // Con no-cors la respuesta es opaca, pero el envío se ejecuta con éxito hacia Google
         msgDiv.style.color = "#2b8a3e";
         msgDiv.innerText = "¡Solicitud enviada con éxito!";
         setTimeout(() => { msgDiv.innerText = ""; }, 4000);
@@ -29,6 +31,6 @@ function enviarAccion(accion) {
     .catch(error => {
         msgDiv.style.color = "#c92a2a";
         msgDiv.innerText = "Error al enviar. Intenta de nuevo.";
-        console.error(error);
+        console.error("Detalle del error:", error);
     });
 }

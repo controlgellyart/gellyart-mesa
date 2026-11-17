@@ -3,80 +3,79 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Servicio a la Mesa - GellyArt</title>
+    <title>GellyArt - Servicio a la Mesa</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
         body {
-            background-color: #f4f7f6;
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: #ffffff;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
-            min-height: 100vh;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
             padding: 20px;
-        }
-        .container {
-            background: #ffffff;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-            width: 100%;
-            max-width: 400px;
+            box-sizing: border-box;
             text-align: center;
         }
-        h1 {
-            font-size: 1.25rem;
-            color: #333333;
-            margin-bottom: 5px;
+        .card {
+            background: #1e1e1e;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+            width: 100%;
+            max-width: 380px;
         }
-        .subtitle {
-            font-size: 1.1rem;
-            color: #d69e2e;
+        h2 {
+            margin-top: 0;
+            color: #ffb703;
+            font-size: 1.5rem;
+        }
+        .mesa-info {
+            font-size: 1.2rem;
             margin-bottom: 25px;
-            font-weight: bold;
+            color: #e0e0e0;
         }
         .btn {
             width: 100%;
             padding: 16px;
-            font-size: 1rem;
+            font-size: 1.1rem;
             font-weight: bold;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             cursor: pointer;
             margin-bottom: 15px;
             color: white;
-            transition: transform 0.1s;
+            transition: opacity 0.2s;
         }
-        .btn:active { transform: scale(0.98); }
-        .btn-service { background-color: #2e7d32; }
-        .btn-bill { background-color: #1565c0; }
-        #status-message {
+        .btn:active {
+            opacity: 0.8;
+        }
+        .btn-mesero {
+            background-color: #d90429;
+        }
+        .btn-cuenta {
+            background-color: #0077b6;
+        }
+        #mensaje {
             margin-top: 15px;
-            padding: 14px;
-            border-radius: 8px;
-            font-size: 0.95rem;
-            display: none;
             font-weight: bold;
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
+            font-size: 1rem;
+            min-height: 24px;
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h1>GellyArt - Servicio</h1>
-        <div class="subtitle" id="info-negocio">Cargando mesa...</div>
+    <div class="card">
+        <h2>GELLYART</h2>
+        <div class="mesa-info" id="infoMesa">Cargando datos...</div>
 
-        <button class="btn btn-service" onclick="enviarSolicitud('LLAMAR AL MESERO')">
-            🛎️ LLAMAR AL MESERO
-        </button>
+        <button class="btn btn-mesero" onclick="enviarAccion('LLAMAR AL MESERO')">🛎️ LLAMAR AL MESERO</button>
+        <button class="btn btn-cuenta" onclick="enviarAccion('PEDIR LA CUENTA')">💳 PEDIR LA CUENTA</button>
 
-        <button class="btn btn-bill" onclick="enviarSolicitud('PEDIR LA CUENTA')">
-            💳 PEDIR LA CUENTA
-        </button>
-
-        <div id="status-message">✅ ¡Solicitud enviada! En un momento te atendemos.</div>
+        <div id="mensaje"></div>
     </div>
 
     <script>
@@ -84,25 +83,24 @@
         const negocio = urlParams.get('negocio') || 'GellyArt';
         const mesa = urlParams.get('mesa') || '1';
 
-        document.getElementById('info-negocio').innerText = `${negocio.toUpperCase()} - MESA ${mesa}`;
+        document.getElementById('infoMesa').innerHTML = `Negocio: <strong>${decodeURIComponent(negocio)}</strong><br>Mesa: <strong>${mesa}</strong>`;
 
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwHZTPuHu8cVLeBsGHSFD8L7M-DrX1rG5rIQ2NcR03RQ3i-TCQBaQ-8bh4Q0luXLskBBQ/exec";
+        function enviarAccion(accion) {
+            const msgDiv = document.getElementById('mensaje');
+            msgDiv.style.color = "#ffb703";
+            msgDiv.innerText = "Enviando solicitud...";
 
-        function enviarSolicitud(tipoAccion) {
-            document.getElementById('status-message.').style.display = 'block';
-            
-            // Construimos la URL con parámetros GET directos hacia Apps Script para evitar bloqueos
-            const urlFinal = `${SCRIPT_URL}?negocio=${encodeURIComponent(negocio)}&mesa=${encodeURIComponent(mesa)}&accion=${encodeURIComponent(tipoAccion)}`;
-
-            // Disparamos la petición en segundo plano mediante un elemento de imagen fantasma (técnica infalible contra CORS)
-            const img = new Image();
-            img.src = urlFinal;
-
-            document.getElementById('status-message').style.display = 'block';
-            
-            setTimeout(() => {
-                alert("¡Solicitud registrada con éxito!");
-            }, 500);
+            google.script.run
+                .withSuccessHandler(function(response) {
+                    msgDiv.style.color = "#38b000";
+                    msgDiv.innerText = "¡Solicitud enviada con éxito!";
+                    setTimeout(() => { msgDiv.innerText = ""; }, 4000);
+                })
+                .withFailureHandler(function(error) {
+                    msgDiv.style.color = "#d90429";
+                    msgDiv.innerText = "Error al enviar. Intenta de nuevo.";
+                })
+                .registrarSolicitud(negocio, mesa, accion);
         }
     </script>
 </body>

@@ -73,6 +73,7 @@
         <h1>GellyArt - Servicio</h1>
         <div class="subtitle" id="info-negocio">Cargando mesa...</div>
 
+        <!-- Botones con diseño limpio -->
         <button class="btn btn-service" onclick="enviarSolicitud('LLAMAR AL MESERO')">
             🛎️ LLAMAR AL MESERO
         </button>
@@ -84,6 +85,13 @@
         <div id="status-message">✅ ¡Solicitud enviada con éxito! En un momento te atendemos.</div>
     </div>
 
+    <!-- Iframe oculto para evitar bloqueos de CORS de Google -->
+    <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;"></iframe>
+
+    <form id="hidden_form" action="https://script.google.com/macros/s/AKfycbwHZTPuHu8cVLeBsGHSFD8L7M-DrX1rG5rIQ2NcR03RQ3i-TCQBaQ-8bh4Q0luXLskBBQ/exec" method="POST" target="hidden_iframe" style="display:none;">
+        <input type="hidden" name="data" id="form_data">
+    </form>
+
     <script>
         const urlParams = new URLSearchParams(window.location.search);
         const negocio = urlParams.get('negocio') || 'GellyArt';
@@ -91,33 +99,25 @@
 
         document.getElementById('info-negocio').innerText = `${negocio.toUpperCase()} - MESA ${mesa}`;
 
-        // Tu URL exacta de Apps Script
-        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwHZTPuHu8cVLeBsGHSFD8L7M-DrX1rG5rIQ2NcR03RQ3i-TCQBaQ-8bh4Q0luXLskBBQ/exec";
-
         function enviarSolicitud(tipoAccion) {
             const statusDiv = document.getElementById('status-message');
             
+            // Mostrar aviso visual inmediato al cliente
             statusDiv.className = "alert-success";
             statusDiv.style.display = "block";
 
-            const datos = {
+            const payload = {
                 negocio: negocio,
                 mesa: mesa,
                 accion: tipoAccion,
                 timestamp: new Date().toISOString()
             };
 
-            fetch(WEB_APP_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(datos)
-            }).catch(error => {
-                console.error('Error al notificar:', error);
-            });
+            // Inyectar datos en el formulario oculto y enviarlo sin bloquear la página
+            document.getElementById('form_data').value = JSON.stringify(payload);
+            document.getElementById('hidden_form').submit();
 
+            // Ocultar el aviso de éxito después de 4 segundos
             setTimeout(() => {
                 statusDiv.style.display = 'none';
                 statusDiv.className = '';

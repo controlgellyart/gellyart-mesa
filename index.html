@@ -6,8 +6,8 @@
     <title>Servicio a la Mesa - GellyArt</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #fcfcfc;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f4f6f8;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -15,65 +15,80 @@
             margin: 0;
         }
         .card {
-            background: white;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            background: #ffffff;
+            padding: 35px 25px;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
             text-align: center;
-            max-width: 350px;
+            max-width: 320px;
             width: 100%;
         }
-        h1 {
-            color: #333;
-            font-size: 22px;
-            margin-bottom: 5px;
+        .header-title {
+            background-color: #34495e;
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
         }
         h2 {
             color: #e67e22;
             font-size: 18px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        p {
+            color: #555;
+            font-size: 14px;
             margin-bottom: 25px;
         }
         .btn {
-            background-color: #27ae60;
-            color: white;
+            background-color: #f1c40f;
+            color: #2c3e50;
             border: none;
             padding: 15px 20px;
-            font-size: 16px;
+            font-size: 15px;
             border-radius: 8px;
             cursor: pointer;
             width: 100%;
             font-weight: bold;
             margin-bottom: 12px;
-            transition: background 0.3s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: background 0.2s;
         }
         .btn:hover {
-            background-color: #219653;
+            background-color: #f39c12;
         }
         .btn-cuenta {
-            background-color: #2980b9;
+            background-color: #2c3e50;
+            color: white;
         }
         .btn-cuenta:hover {
-            background-color: #2471a3;
+            background-color: #34495e;
         }
         #mensaje-estado {
             margin-top: 15px;
             font-size: 14px;
-            color: #555;
+            font-weight: 500;
+            min-height: 20px;
         }
         .footer {
-            margin-top: 20px;
-            font-size: 12px;
-            color: #aaa;
+            margin-top: 25px;
+            font-size: 11px;
+            color: #95a5a6;
+            letter-spacing: 1px;
         }
     </style>
 </head>
 <body>
 
     <div class="card">
-        <h1 id="titulo-negocio">CARGANDO...</h1>
-        <h2 id="titulo-mesa">Mesa --</h2>
+        <div class="header-title">SERVICIO A LA MESA</div>
         
-        <p style="color: #666; margin-bottom: 20px;">¿Cómo podemos ayudarte?</p>
+        <h2 id="titulo-negocio">CARGANDO...</h2>
+        <p>¿Cómo podemos ayudarte?</p>
 
         <button class="btn" onclick="enviarSolicitud('🛎️ SERVICIO')">🛎️ SERVICIO</button>
         <button class="btn btn-cuenta" onclick="enviarSolicitud('💳 CUENTA')">💳 CUENTA</button>
@@ -89,15 +104,15 @@
         const negocio = urlParams.get('negocio') || 'GellyArt';
         const mesa = urlParams.get('mesa') || '1';
 
-        // Mostrar en pantalla los datos de la mesa actual
-        document.getElementById('titulo-negocio').innerText = negocio.toUpperCase();
-        document.getElementById('titulo-mesa').innerText = "Mesa " + mesa;
+        // Mostrar en pantalla los datos de la mesa actual con el formato original
+        document.getElementById('titulo-negocio').innerText = negocio.toUpperCase() + " - MESA " + mesa;
 
         function enviarSolicitud(tipoServicio) {
             const estadoDiv = document.getElementById('mensaje-estado');
+            estadoDiv.style.color = "#2980b9";
             estadoDiv.innerHTML = "Enviando aviso...";
 
-            // URL exacta con la que acaba de funcionar el registro
+            // URL exacta y probada que registra en la hoja y avisa a Telegram
             const scriptURL = 'https://script.google.com/macros/s/AKfycbwHZTPuHu8cVLeBsGHSFD8L7M-DrX1rG5rIQ2NcR03RQ3i-TCQBaQ-8bh4Q0luXLskBBQ/exec';
 
             const datos = {
@@ -115,16 +130,16 @@
                 body: JSON.stringify(datos)
             })
             .then(() => {
-                estadoDiv.innerHTML = "¡Solicitud enviada con éxito! En un momento te atienden.";
-                estadoDiv.style.color = "green";
+                estadoDiv.style.color = "#27ae60";
+                estadoDiv.innerHTML = "¡Solicitud enviada con éxito!";
                 setTimeout(() => {
                     estadoDiv.innerHTML = "";
-                }, 5000);
+                }, 4000);
             })
             .catch(error => {
                 console.error('Error!', error);
+                estadoDiv.style.color = "#c0392b";
                 estadoDiv.innerHTML = "Hubo un error al enviar. Intenta de nuevo.";
-                estadoDiv.style.color = "red";
             });
         }
     </script>

@@ -25,12 +25,12 @@
         }
         h1 {
             color: #333;
-            font-size: 24px;
-            margin-bottom: 10px;
+            font-size: 22px;
+            margin-bottom: 5px;
         }
         h2 {
             color: #e67e22;
-            font-size: 20px;
+            font-size: 18px;
             margin-bottom: 25px;
         }
         .btn {
@@ -43,15 +43,27 @@
             cursor: pointer;
             width: 100%;
             font-weight: bold;
+            margin-bottom: 12px;
             transition: background 0.3s;
         }
         .btn:hover {
             background-color: #219653;
         }
+        .btn-cuenta {
+            background-color: #2980b9;
+        }
+        .btn-cuenta:hover {
+            background-color: #2471a3;
+        }
         #mensaje-estado {
             margin-top: 15px;
             font-size: 14px;
             color: #555;
+        }
+        .footer {
+            margin-top: 20px;
+            font-size: 12px;
+            color: #aaa;
         }
     </style>
 </head>
@@ -61,9 +73,14 @@
         <h1 id="titulo-negocio">CARGANDO...</h1>
         <h2 id="titulo-mesa">Mesa --</h2>
         
-        <button class="btn" onclick="enviarSolicitud()">🛎️ LLAMAR AL MESERO</button>
+        <p style="color: #666; margin-bottom: 20px;">¿Cómo podemos ayudarte?</p>
+
+        <button class="btn" onclick="enviarSolicitud('🛎️ SERVICIO')">🛎️ SERVICIO</button>
+        <button class="btn btn-cuenta" onclick="enviarSolicitud('💳 CUENTA')">💳 CUENTA</button>
         
         <div id="mensaje-estado"></div>
+
+        <div class="footer">By GellyArt</div>
     </div>
 
     <script>
@@ -73,20 +90,20 @@
         const mesa = urlParams.get('mesa') || '1';
 
         // Mostrar en pantalla los datos de la mesa actual
-        document.getElementById('titulo-negocio').innerText = negocio;
+        document.getElementById('titulo-negocio').innerText = negocio.toUpperCase();
         document.getElementById('titulo-mesa').innerText = "Mesa " + mesa;
 
-        function enviarSolicitud() {
+        function enviarSolicitud(tipoServicio) {
             const estadoDiv = document.getElementById('mensaje-estado');
             estadoDiv.innerHTML = "Enviando aviso...";
 
-            // URL exacta de tu Apps Script actual
-            const scriptURL = 'https://script.google.com/macros/s/AKfycbyvoQENSIGI_vh2XEyVRVMg8LSHVpXUETeTA3uzn6RSrq953f8oYcNk8z09VNnd96VJ/exec';
+            // URL exacta de tu Apps Script original con la que opera tu sistema
+            const scriptURL = 'https://script.google.com/macros/s/AKfycbwHZTPuHu8cVLeBsGHSFD8L7M-DrX1rG5rIQ2NcR03RQ3i-TCQBaQ-8bh4Q0luXLskBBQ/exec';
 
             const datos = {
                 negocio: negocio,
                 mesa: mesa,
-                tipo: "Llamar al mesero"
+                tipo: tipoServicio
             };
 
             fetch(scriptURL, {

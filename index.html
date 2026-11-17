@@ -5,61 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Servicio a la Mesa - GellyArt</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f7f6;
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-        .container {
-            background: white;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            max-width: 400px;
-            width: 100%;
-            text-align: center;
-        }
-        h2 {
-            color: #333;
-            margin-bottom: 10px;
-        }
-        .info {
-            font-size: 18px;
-            color: #555;
-            margin: 15px 0;
-            background: #eef2f3;
-            padding: 10px;
-            border-radius: 6px;
-        }
-        button {
-            background-color: #28a745;
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            font-size: 16px;
-            border-radius: 6px;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 15px;
-            transition: background 0.3s;
-        }
-        button:hover {
-            background-color: #218838;
-        }
-        .mensaje-exito {
-            display: none;
-            color: #155724;
-            background-color: #d4edda;
-            border: 1px solid #c3e6cb;
-            padding: 15px;
-            border-radius: 6px;
-            margin-top: 20px;
-        }
+        body { font-family: Arial, sans-serif; background-color: #f4f7f6; margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; height: 100vh; }
+        .container { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); max-width: 400px; width: 100%; text-align: center; }
+        h2 { color: #333; margin-bottom: 10px; }
+        .info { font-size: 18px; color: #555; margin: 15px 0; background: #eef2f3; padding: 10px; border-radius: 6px; }
+        .btn-grupo { display: flex; flex-direction: column; gap: 12px; margin-top: 20px; }
+        button { background-color: #28a745; color: white; border: none; padding: 14px 20px; font-size: 16px; border-radius: 6px; cursor: pointer; transition: background 0.3s; font-weight: bold; }
+        button.cuenta { background-color: #007bff; }
+        button:hover { opacity: 0.9; }
+        .mensaje-exito { display: none; color: #155724; background-color: #d4edda; border: 1px solid #c3e6cb; padding: 15px; border-radius: 6px; margin-top: 20px; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -67,56 +21,39 @@
     <div class="container">
         <h2>GellyArt - Servicio</h2>
         <div id="detalles-mesa" class="info">
-            Cargando información de tu mesa...
+            Cargando información...
         </div>
 
-        <form id="form-solicitud">
-            <input type="hidden" id="input-negocio" name="entry.XXXXXX_NEGOCIO">
-            <input type="hidden" id="input-mesa" name="entry.XXXXXX_MESA">
-            
-            <div style="margin-bottom: 15px; text-align: left;">
-                <label for="tipo-ayuda" style="font-weight: bold; color: #333; display: block; margin-bottom: 5px;">¿En qué podemos ayudarte?</label>
-                <select id="tipo-ayuda" name="entry.XXXXXX_AYUDA" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #ccc;">
-                    <option value="Llamar al mesero">🛎️ Llamar al mesero</option>
-                    <option value="Pedir la cuenta">💳 Pedir la cuenta</option>
-                    <option value="Solicitar servilletas / extras">🧻 Solicitar servilletas o extras</option>
-                    <option value="Otro motivo">💬 Otro motivo</option>
-                </select>
-            </div>
-
-            <button type="submit" id="btn-enviar">Enviar Solicitud</button>
-        </form>
+        <div id="panel-botones" class="btn-grupo">
+            <button onclick="enviarSolicitud('SERVICIO')">🔔 LLAMAR AL MESERO (SERVICIO)</button>
+            <button class="cuenta" onclick="enviarSolicitud('CUENTA')">💳 PEDIR LA CUENTA</button>
+        </div>
 
         <div id="alerta-exito" class="mensaje-exito">
-            ¡Solicitud enviada con éxito! El personal ha sido notificado y te atenderá en un momento.
+            ¡Solicitud enviada con éxito! El personal ha sido notificado.
         </div>
     </div>
 
     <script>
-        // Obtener parámetros de la URL (?negocio=NOMBRE&mesa=X)
         const urlParams = new URLSearchParams(window.location.search);
-        const negocio = urlParams.get('negocio') || 'Establecimiento';
-        const mesa = urlParams.get('mesa') || 'General';
+        const negocio = urlParams.get('negocio') || 'GELLYART';
+        const mesa = urlParams.get('mesa') || '1';
 
-        // Mostrar en pantalla
         document.getElementById('detalles-mesa').innerHTML = 
             `🏢 <strong>Negocio:</strong> ${negocio}<br>📍 <strong>Mesa:</strong> ${mesa}`;
 
-        // Asignar valores a los inputs ocultos para el formulario
-        document.getElementById('input-negocio').value = negocio;
-        document.getElementById('input-mesa').value = mesa;
-
-        // Manejo del envío del formulario (puedes adaptarlo al endpoint de tu Google Form o Web App)
-        document.getElementById('form-solicitud').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            // Simulación de envío o conexión directa con tu form/script
-            document.getElementById('form-solicitud').style.display = 'none';
+        function enviarSolicitud(tipoSolicitud) {
+            document.getElementById('panel-botones').style.display = 'none';
+            document.getElementById('detalles-mesa').style.display = 'none';
             document.getElementById('alerta-exito').style.display = 'block';
 
-            // Aquí puedes integrar el fetch hacia tu Google Apps Script web app si prefieres envío directo por POST JSON
-            // fetch('URL_DE_TU_WEB_APP', { method: 'POST', body: new FormData(this) });
-        });
+            // Llamada directa al Apps Script desplegado
+            google.script.run
+                .withSuccessHandler(function() {
+                    console.log("Registrado con éxito");
+                })
+                .registrarSolicitudWeb(negocio, mesa, tipoSolicitud);
+        }
     </script>
 </body>
 </html>

@@ -5,54 +5,144 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Servicio a la Mesa - GellyArt</title>
     <style>
-        body { font-family: Arial, sans-serif; background-color: #f4f7f6; margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; height: 100vh; }
-        .container { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); max-width: 400px; width: 100%; text-align: center; }
-        h2 { color: #333; margin-bottom: 10px; }
-        .info { font-size: 18px; color: #555; margin: 15px 0; background: #eef2f3; padding: 10px; border-radius: 6px; }
-        .btn-grupo { display: flex; flex-direction: column; gap: 12px; margin-top: 20px; }
-        button { background-color: #28a745; color: white; border: none; padding: 14px 20px; font-size: 16px; border-radius: 6px; cursor: pointer; transition: background 0.3s; font-weight: bold; }
-        button.cuenta { background-color: #007bff; }
-        button:hover { opacity: 0.9; }
-        .mensaje-exito { display: none; color: #155724; background-color: #d4edda; border: 1px solid #c3e6cb; padding: 15px; border-radius: 6px; margin-top: 20px; font-weight: bold; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            background-color: #f4f7f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+        h1 {
+            font-size: 1.25rem;
+            color: #333333;
+            margin-bottom: 5px;
+        }
+        .subtitle {
+            font-size: 0.95rem;
+            color: #666666;
+            margin-bottom: 25px;
+            font-weight: bold;
+        }
+        .btn {
+            width: 100%;
+            padding: 16px;
+            font-size: 1rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-bottom: 15px;
+            transition: background 0.2s, transform 0.1s;
+            color: white;
+        }
+        .btn:active {
+            transform: scale(0.98);
+        }
+        .btn-service {
+            background-color: #2e7d32;
+        }
+        .btn-service:hover {
+            background-color: #1b5e20;
+        }
+        .btn-bill {
+            background-color: #1565c0;
+        }
+        .btn-bill:hover {
+            background-color: #0d47a1;
+        }
+        #status-message {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            display: none;
+        }
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            display: block !important;
+        }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h2>GellyArt - Servicio</h2>
-        <div id="detalles-mesa" class="info">
-            Cargando información...
-        </div>
+        <h1>GellyArt - Servicio</h1>
+        <div class="subtitle" id="info-negocio">Cargando mesa...</div>
 
-        <div id="panel-botones" class="btn-grupo">
-            <button onclick="enviarSolicitud('SERVICIO')">🔔 LLAMAR AL MESERO (SERVICIO)</button>
-            <button class="cuenta" onclick="enviarSolicitud('CUENTA')">💳 PEDIR LA CUENTA</button>
-        </div>
+        <button class="btn btn-service" onclick="enviarSolicitud('LLAMAR AL MESERO')">
+            🛎️ LLAMAR AL MESERO
+        </button>
 
-        <div id="alerta-exito" class="mensaje-exito">
-            ¡Solicitud enviada con éxito! El personal ha sido notificado.
-        </div>
+        <button class="btn btn-bill" onclick="enviarSolicitud('PEDIR LA CUENTA')">
+            💳 PEDIR LA CUENTA
+        </button>
+
+        <div id="status-message">¡Solicitud enviada con éxito! El personal ha sido notificado.</div>
     </div>
 
     <script>
+        // Obtener parámetros de la URL (?negocio=NOMBRE&mesa=X)
         const urlParams = new URLSearchParams(window.location.search);
-        const negocio = urlParams.get('negocio') || 'GELLYART';
+        const negocio = urlParams.get('negocio') || 'Negocio';
         const mesa = urlParams.get('mesa') || '1';
 
-        document.getElementById('detalles-mesa').innerHTML = 
-            `🏢 <strong>Negocio:</strong> ${negocio}<br>📍 <strong>Mesa:</strong> ${mesa}`;
+        document.getElementById('info-negocio').innerText = `${negocio.toUpperCase()} - Mesa ${mesa}`;
 
-        function enviarSolicitud(tipoSolicitud) {
-            document.getElementById('panel-botones').style.display = 'none';
-            document.getElementById('detalles-mesa').style.display = 'none';
-            document.getElementById('alerta-exito').style.display = 'block';
+        // URL de tu Web App de Google Apps Script (asegúrate de que sea la correcta vinculada a tu Google Sheets)
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycby.../exec"; // Reemplaza con tu URL real si es necesario
 
-            // Llamada directa al Apps Script desplegado
-            google.script.run
-                .withSuccessHandler(function() {
-                    console.log("Registrado con éxito");
-                })
-                .registrarSolicitudWeb(negocio, mesa, tipoSolicitud);
+        function enviarSolicitud(tipoAccion) {
+            const statusDiv = document.getElementById('status-message');
+            
+            // Mostrar mensaje visual inmediato al cliente
+            statusDiv.className = "alert-success";
+            statusDiv.style.display = "block";
+
+            // Datos a enviar a Google Sheets / Apps Script
+            const datos = {
+                negocio: negocio,
+                mesa: mesa,
+                accion: tipoAccion,
+                timestamp: new Date().toISOString()
+            };
+
+            // Envío por fetch (si usas Web App de Google Apps Script configurada por POST)
+            if (WEB_APP_URL && !WEB_APP_URL.includes("AKfycby...")) {
+                fetch(WEB_APP_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(datos)
+                }).catch(error => {
+                    console.error('Error al notificar:', error);
+                });
+            }
+
+            // Ocultar mensaje de éxito después de 4 segundos
+            setTimeout(() => {
+                statusDiv.style.display = 'none';
+                statusDiv.className = '';
+            }, 4000);
         }
     </script>
 </body>

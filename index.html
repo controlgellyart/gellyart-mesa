@@ -70,8 +70,8 @@
 <body>
 
     <div class="container">
-        <h1 id="nombre-negocio">Cargando...</h1>
-        <div class="mesa-info" id="numero-mesa">Mesa --</div>
+        <h1 id="nombre-negocio">GellyArt</h1>
+        <div class="mesa-info" id="numero-mesa">Mesa 1</div>
 
         <button class="btn btn-mesero" onclick="enviarSolicitud('Llamar al Mesero')">🔔 Llamar al Mesero</button>
         <button class="btn btn-cuenta" onclick="enviarSolicitud('Pedir la Cuenta')">💵 Pedir la Cuenta</button>
@@ -84,8 +84,8 @@
         const negocio = urlParams.get('negocio') || 'GellyArt';
         const mesa = urlParams.get('mesa') || '1';
 
-        document.getElementById('nombre-negocio').innerText = negocio;
-        document.getElementById('numero-mesa').innerText = 'Mesa ' + mesa;
+        document.getElementById('nombre-negocio').innerText = decodeURIComponent(negocio);
+        document.getElementById('numero-mesa').innerText = 'Mesa ' + decodeURIComponent(mesa);
 
         const scriptURL = 'https://script.google.com/macros/s/AKfycbwHZTPuHu8cVLeBsGHSFD8L7M-DrX1rG5rIQ2NcR03RQ3i-TCQBaQ-8bh4Q0luXLskBBQ/exec';
 
@@ -95,8 +95,8 @@
             mensajeDiv.innerText = 'Enviando solicitud...';
 
             const datos = {
-                negocio: negocio,
-                mesa: mesa,
+                negocio: decodeURIComponent(negocio),
+                mesa: decodeURIComponent(mesa),
                 accion: accion
             };
 

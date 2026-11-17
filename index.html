@@ -3,122 +3,172 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GELLYART - Servicio a la Mesa</title>
+    <title>Servicio a la Mesa - GellyArt</title>
     <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
-            margin: 0;
-            padding: 20px;
+            background-color: #f4f6f8;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
+            padding: 20px;
         }
-        .container {
+        .card {
             background: white;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            max-width: 400px;
             width: 100%;
+            max-width: 380px;
+            padding: 30px 25px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            text-align: center;
         }
-        h2 {
-            color: #333;
-            margin-bottom: 10px;
-        }
-        p {
-            color: #666;
+        .header-badge {
+            background-color: #4a5568;
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+            letter-spacing: 1px;
+            padding: 12px 20px;
+            border-radius: 8px;
             margin-bottom: 20px;
         }
-        .info-mesa {
-            font-size: 1.2rem;
+        .mesa-info {
+            color: #d69e2e;
             font-weight: bold;
-            color: #007bff;
+            font-size: 18px;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+        .instruction {
+            color: #2d3748;
+            font-size: 20px;
+            font-weight: 600;
             margin-bottom: 25px;
         }
-        button {
-            background-color: #28a745;
+        .btn-servicio {
+            background-color: #ecc94b;
+            color: #1a202c;
+            border: none;
+            width: 100%;
+            padding: 15px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 10px rgba(236, 201, 75, 0.3);
+            transition: all 0.2s ease;
+        }
+        .btn-servicio:hover { background-color: #d69e2e; }
+        .btn-cuenta {
+            background-color: #2d3748;
             color: white;
             border: none;
-            padding: 12px 20px;
-            font-size: 1rem;
-            border-radius: 8px;
-            cursor: pointer;
             width: 100%;
-            transition: background 0.3s ease;
-        }
-        button:hover {
-            background-color: #218838;
-        }
-        #mensajeDiv {
-            margin-top: 15px;
+            padding: 15px;
+            font-size: 16px;
             font-weight: bold;
-            font-size: 0.95rem;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 10px rgba(45, 55, 72, 0.3);
+            transition: all 0.2s ease;
         }
+        .btn-cuenta:hover { background-color: #1a202c; }
+        
+        /* Vista de éxito exacta a tu captura */
+        .success-box {
+            background-color: #e6fffa;
+            border: 2px solid #38b2ac;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
+        .success-box h3 {
+            color: #2b6cb0;
+            font-size: 18px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .success-box p {
+            color: #2d3748;
+            font-size: 15px;
+        }
+        .footer-brand {
+            color: #a0aec0;
+            font-size: 13px;
+            margin-top: 10px;
+        }
+        .hidden { display: none; }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h2 id="tituloNegocio">GellyArt - Servicio</h2>
-        <div class="info-mesa" id="infoMesa">Cargando mesa...</div>
+    <div class="card">
+        <div class="header-badge">SERVICIO A LA MESA</div>
         
-        <button id="btnLlamar" onclick="llamarMesero()">¡Llamar al Mesero!</button>
+        <div id="infoNegocioMesa" class="mesa-info">ESTHELLA - MESA 3</div>
         
-        <div id="mensajeDiv"></div>
+        <!-- Pantalla Principal de Botones -->
+        <div id="vistaPrincipal">
+            <div class="instruction">¿Cómo podemos ayudarte?</div>
+            <button class="btn-servicio" onclick="enviarSolicitud('SERVICIO')">🛎️ SERVICIO</button>
+            <button class="btn-cuenta" onclick="enviarSolicitud('CUENTA')">💳 CUENTA</button>
+        </div>
+
+        <!-- Pantalla de Éxito (idéntica a tu diseño verde/agua) -->
+        <div id="vistaExito" class="hidden">
+            <div class="instruction" style="margin-bottom: 15px;">¿Cómo podemos ayudarte?</div>
+            <div class="success-box">
+                <h3>✅ ¡Solicitud enviada!</h3>
+                <p>Enseguida estamos contigo.</p>
+            </div>
+        </div>
+
+        <div class="footer-brand">By GellyArt</div>
     </div>
 
     <script>
-        // Obtener parámetros de la URL (ej: ?negocio=ESTHELLA&mesa=3)
+        // Leer parámetros de la URL (?negocio=ESTHELLA&mesa=3)
         const urlParams = new URLSearchParams(window.location.search);
-        const negocio = urlParams.get('negocio') || 'Local';
-        const mesa = urlParams.get('mesa') || 'Desconocida';
+        const negocio = urlParams.get('negocio') || 'ESTHELLA';
+        const mesa = urlParams.get('mesa') || '3';
 
-        // Mostrar los datos en pantalla
-        document.getElementById('tituloNegocio').innerText = `Servicio - ${negocio}`;
-        document.getElementById('infoMesa').innerText = `Mesa N.° ${mesa}`;
+        // Mostrar dinámicamente en pantalla
+        document.getElementById('infoNegocioMesa').innerText = `${negocio} - MESA ${mesa}`;
 
-        function llamarMesero() {
-            const mensajeDiv = document.getElementById('mensajeDiv');
-            const btnLlamar = document.getElementById('btnLlamar');
-            
+        function enviarSolicitud(tipo) {
             // URL de tu Web App de Google Apps Script
-            const scriptURL = 'https://script.google.com/macros/s/AKfycbwHZTPuHu8cVLeBsGHSFD8L7M-DrX1rG5rIQ2NcR03RQ3i-TCQBaQ-8bh4Q0luXLskBBQ/exec'; 
+            const urlWebHook = "TU_URL_DE_GOOGLE_APPS_SCRIPT";
 
-            const datos = {
-                negocio: negocio,
-                mesa: mesa,
-                timestamp: new Date().toISOString()
-            };
+            // Cambiar visualmente a la pantalla de éxito de inmediato
+            document.getElementById('vistaPrincipal').classList.add('hidden');
+            document.getElementById('vistaExito').classList.remove('hidden');
 
-            mensajeDiv.style.color = '#555';
-            mensajeDiv.innerText = 'Enviando solicitud...';
-            btnLlamar.disabled = true;
-
-            fetch(scriptURL, {
+            // Enviar datos al Apps Script en segundo plano
+            fetch(urlWebHook, {
                 method: 'POST',
                 mode: 'no-cors',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(datos)
-            })
-            .then(() => {
-                mensajeDiv.style.color = '#28a745';
-                mensajeDiv.innerText = '¡Solicitud enviada con éxito!';
-                setTimeout(() => {
-                    mensajeDiv.innerText = '';
-                    btnLlamar.disabled = false;
-                }, 4000);
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                mensajeDiv.style.color = '#dc3545';
-                mensajeDiv.innerText = 'Hubo un error al enviar.';
-                btnLlamar.disabled = false;
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    negocio: negocio, 
+                    mesa: mesa, 
+                    tipo: tipo 
+                })
+            }).catch(error => {
+                console.error('Error al enviar:', error);
             });
+
+            // Regresar a los botones principales después de 6 segundos por si necesitan otra acción
+            setTimeout(() => {
+                document.getElementById('vistaExito').classList.add('hidden');
+                document.getElementById('vistaPrincipal').classList.remove('hidden');
+            }, 6000);
         }
     </script>
 </body>

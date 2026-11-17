@@ -48,9 +48,7 @@
         }
         .btn:active { transform: scale(0.98); }
         .btn-service { background-color: #2e7d32; }
-        .btn-service:hover { background-color: #1b5e20; }
         .btn-bill { background-color: #1565c0; }
-        .btn-bill:hover { background-color: #0d47a1; }
         #status-message {
             margin-top: 15px;
             padding: 14px;
@@ -58,12 +56,9 @@
             font-size: 0.95rem;
             display: none;
             font-weight: bold;
-        }
-        .alert-success {
             background-color: #d4edda;
             color: #155724;
             border: 1px solid #c3e6cb;
-            display: block !important;
         }
     </style>
 </head>
@@ -73,7 +68,6 @@
         <h1>GellyArt - Servicio</h1>
         <div class="subtitle" id="info-negocio">Cargando mesa...</div>
 
-        <!-- Botones con diseño limpio -->
         <button class="btn btn-service" onclick="enviarSolicitud('LLAMAR AL MESERO')">
             🛎️ LLAMAR AL MESERO
         </button>
@@ -82,15 +76,8 @@
             💳 PEDIR LA CUENTA
         </button>
 
-        <div id="status-message">✅ ¡Solicitud enviada con éxito! En un momento te atendemos.</div>
+        <div id="status-message">✅ ¡Solicitud enviada! En un momento te atendemos.</div>
     </div>
-
-    <!-- Iframe oculto para evitar bloqueos de CORS de Google -->
-    <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;"></iframe>
-
-    <form id="hidden_form" action="https://script.google.com/macros/s/AKfycbwHZTPuHu8cVLeBsGHSFD8L7M-DrX1rG5rIQ2NcR03RQ3i-TCQBaQ-8bh4Q0luXLskBBQ/exec" method="POST" target="hidden_iframe" style="display:none;">
-        <input type="hidden" name="data" id="form_data">
-    </form>
 
     <script>
         const urlParams = new URLSearchParams(window.location.search);
@@ -99,29 +86,23 @@
 
         document.getElementById('info-negocio').innerText = `${negocio.toUpperCase()} - MESA ${mesa}`;
 
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwHZTPuHu8cVLeBsGHSFD8L7M-DrX1rG5rIQ2NcR03RQ3i-TCQBaQ-8bh4Q0luXLskBBQ/exec";
+
         function enviarSolicitud(tipoAccion) {
-            const statusDiv = document.getElementById('status-message');
+            document.getElementById('status-message.').style.display = 'block';
             
-            // Mostrar aviso visual inmediato al cliente
-            statusDiv.className = "alert-success";
-            statusDiv.style.display = "block";
+            // Construimos la URL con parámetros GET directos hacia Apps Script para evitar bloqueos
+            const urlFinal = `${SCRIPT_URL}?negocio=${encodeURIComponent(negocio)}&mesa=${encodeURIComponent(mesa)}&accion=${encodeURIComponent(tipoAccion)}`;
 
-            const payload = {
-                negocio: negocio,
-                mesa: mesa,
-                accion: tipoAccion,
-                timestamp: new Date().toISOString()
-            };
+            // Disparamos la petición en segundo plano mediante un elemento de imagen fantasma (técnica infalible contra CORS)
+            const img = new Image();
+            img.src = urlFinal;
 
-            // Inyectar datos en el formulario oculto y enviarlo sin bloquear la página
-            document.getElementById('form_data').value = JSON.stringify(payload);
-            document.getElementById('hidden_form').submit();
-
-            // Ocultar el aviso de éxito después de 4 segundos
+            document.getElementById('status-message').style.display = 'block';
+            
             setTimeout(() => {
-                statusDiv.style.display = 'none';
-                statusDiv.className = '';
-            }, 4000);
+                alert("¡Solicitud registrada con éxito!");
+            }, 500);
         }
     </script>
 </body>

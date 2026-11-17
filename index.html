@@ -18,120 +18,96 @@
             background: white;
             padding: 30px;
             border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             text-align: center;
-            width: 320px;
-            border: 1px solid #eaeaea;
+            max-width: 350px;
+            width: 100%;
+        }
+        h1 {
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 10px;
         }
         h2 {
-            font-size: 14px;
-            letter-spacing: 1px;
-            color: #fff;
-            background: #343a40;
-            padding: 10px;
-            border-radius: 6px;
-            margin-bottom: 20px;
-        }
-        .mesa-info {
-            font-size: 16px;
-            font-weight: bold;
-            color: #c69214;
-            margin-bottom: 15px;
-        }
-        .pregunta {
-            font-size: 15px;
-            color: #495057;
+            color: #e67e22;
+            font-size: 20px;
             margin-bottom: 25px;
         }
         .btn {
-            width: 100%;
-            padding: 14px;
-            font-size: 16px;
-            font-weight: bold;
+            background-color: #27ae60;
+            color: white;
             border: none;
+            padding: 15px 20px;
+            font-size: 16px;
             border-radius: 8px;
             cursor: pointer;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            transition: opacity 0.2s;
+            width: 100%;
+            font-weight: bold;
+            transition: background 0.3s;
         }
-        .btn:active {
-            opacity: 0.8;
+        .btn:hover {
+            background-color: #219653;
         }
-        .btn-servicio {
-            background-color: #f1a80a;
-            color: #000;
-        }
-        .btn-cuenta {
-            background-color: #343a40;
-            color: #fff;
-        }
-        #mensaje {
+        #mensaje-estado {
             margin-top: 15px;
             font-size: 14px;
-            font-weight: bold;
-            min-height: 20px;
-        }
-        .footer {
-            margin-top: 20px;
-            font-size: 11px;
-            color: #adb5bd;
+            color: #555;
         }
     </style>
 </head>
 <body>
 
     <div class="card">
-        <h2>SERVICIO A LA MESA</h2>
-        <div class="mesa-info" id="infoMesa">CARGANDO...</div>
-        <div class="pregunta">¿Cómo podemos ayudarte?</div>
-
-        <button class="btn btn-servicio" onclick="enviarAccion('SERVICIO')">
-            🛎️ SERVICIO
-        </button>
-
-        <button class="btn btn-cuenta" onclick="enviarAccion('CUENTA')">
-            💳 CUENTA
-        </button>
-
-        <div id="mensaje"></div>
-
-        <div class="footer">By GellyArt</div>
+        <h1 id="titulo-negocio">CARGANDO...</h1>
+        <h2 id="titulo-mesa">Mesa --</h2>
+        
+        <button class="btn" onclick="enviarSolicitud()">🛎️ LLAMAR AL MESERO</button>
+        
+        <div id="mensaje-estado"></div>
     </div>
 
     <script>
+        // Capturar los parámetros de la URL (negocio y mesa)
         const urlParams = new URLSearchParams(window.location.search);
-        const negocio = urlParams.get('negocio') || 'GENERAL';
+        const negocio = urlParams.get('negocio') || 'GellyArt';
         const mesa = urlParams.get('mesa') || '1';
 
-        document.getElementById('infoMesa').innerText = `${negocio} — MESA ${mesa}`;
+        // Mostrar en pantalla los datos de la mesa actual
+        document.getElementById('titulo-negocio').innerText = negocio;
+        document.getElementById('titulo-mesa').innerText = "Mesa " + mesa;
 
-        function enviarAccion(accion) {
-            const msgDiv = document.getElementById('mensaje');
-            msgDiv.style.color = "#c69214";
-            msgDiv.innerText = "Enviando solicitud...";
+        function enviarSolicitud() {
+            const estadoDiv = document.getElementById('mensaje-estado');
+            estadoDiv.innerHTML = "Enviando aviso...";
 
-            const URL_APPS_SCRIPT = "https://script.google.com/macros/s/AKfycbwHZTPuHu8cVLeBsGHSFD8L7M-DrX1rG5rIQ2NcR03RQ3i-TCQBaQ-8bh4Q0luXLskBBQ/exec";
+            // URL de tu Apps Script recién creada
+            const scriptURL = 'https://script.google.com/macros/s/AKfycbyvoQENSIGI_vh2XEyVRVMg8LSHVpXUETeTA3uzn6RSrq953f8oYcNk8z09VNnd96VJ/exec';
 
-            // Petición GET limpia y compatible con Apps Script sin bloqueos CORS
-            const urlFinal = `${URL_APPS_SCRIPT}?negocio=${encodeURIComponent(negocio)}&mesa=${encodeURIComponent(mesa)}&accion=${encodeURIComponent(accion)}`;
+            const datos = {
+                negocio: negocio,
+                mesa: mesa,
+                tipo: "Llamar al mesero"
+            };
 
-            fetch(urlFinal, {
-                method: "GET",
-                mode: "no-cors"
+            fetch(scriptURL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(datos)
             })
             .then(() => {
-                msgDiv.style.color = "#2b8a3e";
-                msgDiv.innerText = "¡Solicitud enviada con éxito!";
-                setTimeout(() => { msgDiv.innerText = ""; }, 4000);
+                estadoDiv.innerHTML = "¡Solicitud enviada con éxito! En un momento te atienden.";
+                estadoDiv.style.color = "green";
+                setTimeout(() => {
+                    estadoDiv.innerHTML = "";
+                }, 5000);
             })
             .catch(error => {
-                msgDiv.style.color = "#c92a2a";
-                msgDiv.innerText = "Error al enviar. Intenta de nuevo.";
-                console.error("Detalle:", error);
+                console.error('Error!', error);
+                estadoDiv.innerHTML = "Hubo un error al enviar. Intenta de nuevo.";
+                estadoDiv.style.color = "red";
             });
         }
     </script>
